@@ -1,0 +1,27 @@
+{
+  "name": "waterline-express-example",
+  "version": "0.1.0",
+  "description": "A base MVC layout using Waterline and Express",
+  "main": "app.js",
+  "author": "Isaac Whitfield",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iwhitfield/waterline-express-example"
+  },
+  "license": "MIT",
+  "scripts": {
+    "start": "supervisor ./bin/www"
+  },
+  "dependencies": {
+    "body-parser": "~1.13.2",
+    "debug": "2.2.0",
+    "express": "~4.13.1",
+    "jade": "~1.11.0",
+    "lodash.merge": "3.3.2",
+    "lori": "~1.0.4",
+    "sails-memory": "0.10.5",
+    "serve-favicon": "~2.3.0",
+    "supervisor": "~0.7.1",
+    "waterline": "0.10.26"
+  }
+}

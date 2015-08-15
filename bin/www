@@ -1,0 +1,111 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var app = require('../app');
+var pkg = require('../package.json');
+var http = require('http');
+var lori = require('lori');
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+var port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ */
+
+var server = http.createServer(app);
+
+/**
+ * Setup all models needed for the application.
+ */
+
+require('../util/orm')
+  .setup()
+  .then(function(modelNames){
+
+    /**
+     * Listen on provided port, on all network interfaces.
+     */
+
+    server.listen(port, function(){
+      var sAddress = server.address();
+      var address = sAddress.address === '::' ? 'localhost' : sAddress.address;
+      var loaded = modelNames.length > 0
+        ? 'Loaded models: ' + JSON.stringify(modelNames)
+        : 'No models found to load';
+
+      lori.log('');
+      lori.log('Welcome to ' + pkg.name + ' v' + pkg.version + '!');
+      lori.log('Visit: http://' + address + ':' + sAddress.port + ' for documentation.');
+      lori.log('');
+
+      lori.info('Listening on port ' + sAddress.port);
+      lori.info(loaded);
+    });
+
+    /**
+     * Listen for any server errors.
+     */
+
+    server.on('error', onError);
+
+  })
+  .catch(function(err){
+    lori.error(err);
+    throw err;
+  });
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
